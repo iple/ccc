@@ -18,7 +18,8 @@ struct FileLogger : Logger {
 };
 
 struct Bank {
-  void set_logger(Logger* new_logger) {
+  Bank(Logger* logger) : logger{ logger } {} // Constructor injection
+  void set_logger(Logger* new_logger) {      // Property injection
     logger = new_logger;
   }
   void make_transfer(long from, long to, double amount) {
@@ -33,8 +34,9 @@ struct Bank {
 int main() {
   ConsoleLogger console_logger;
   FileLogger file_logger;
-  Bank bank;
-  bank.set_logger(&console_logger);
+  // Bank bank;
+  // bank.set_logger(&console_logger);
+  Bank bank {&console_logger};
   bank.make_transfer(1000, 2000, 49.95);
   bank.set_logger(&file_logger);
   bank.make_transfer(2000, 4000, 20.00);

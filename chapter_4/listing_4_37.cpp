@@ -2,6 +2,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <utility>
+//#include <algorithm>    // std::swap
 
 struct SimpleString {
   SimpleString(size_t max_size)
@@ -30,15 +31,28 @@ struct SimpleString {
     other.buffer = nullptr;
     other.max_size = 0;
   }
+  // SimpleString& operator=(const SimpleString& other) {
+  //   if(this == &other)
+  //     return *this;
+  //   const auto new_buffer = new char[other.max_size];
+  //   delete[] buffer;
+  //   buffer = new_buffer;
+  //   length = other.length;
+  //   max_size = other.max_size;
+  //   std::strncpy(buffer, other.buffer, max_size);
+  //   return *this;
+  // }
+  // This a canonical implementation of a copy assignment operator, from the point of view of exception safety. 
+  // By using the copy constructor and then the non-throwing std::swap, it makes sure that no intermediate state
+  // with uninitialized memory can arise if exceptions are thrown.
+  // https://eli.thegreenplace.net/2011/12/15/understanding-lvalues-and-rvalues-in-c-and-c/#id9
   SimpleString& operator=(const SimpleString& other) {
     if(this == &other)
       return *this;
-    const auto new_buffer = new char[other.max_size];
-    delete[] buffer;
-    buffer = new_buffer;
-    length = other.length;
-    max_size = other.max_size;
-    std::strncpy(buffer, other.buffer, max_size);
+    SimpleString tmp(other);
+    std::swap(max_size, tmp.max_size);
+    std::swap(length, tmp.length);
+    std::swap(buffer, tmp.buffer);
     return *this;
   }
   SimpleString& operator=(SimpleString&& other) noexcept {

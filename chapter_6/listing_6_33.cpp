@@ -31,6 +31,6 @@ int main() {
   int fib[]{ 1, 1, 2, 0 };
   printf("%d %d %d ", get<0>(fib), get<1>(fib), get<2>(fib));
   get<3>(fib) = get<1>(fib) + get<2>(fib);
-  printf("%d", get<3>(fib));
+  printf("%d\n", get<3>(fib));
   // printf("%d", get<4>(fib));
 }
